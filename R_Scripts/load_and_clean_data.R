@@ -7,3 +7,24 @@ library(tidyverse)
 install.packages("data.table")
 library(data.table)
 library(filenamer)
+
+# Determine path where data files are located and load them into R
+path = "../raw_data/data.csv"
+
+# read file paths
+file.names <-list.files(path, pattern = ".csv", full.names = T, recursive = T)
+
+# read all file content
+all_content <- file.names %>%
+  lapply(read.table, header = T, sep = ",")
+
+# shorten file path to file name, then convert object to list
+all_filenames <- file.names %>%
+  basename() %>%
+  as.list()
+
+# combine file content list and file name list
+all_lists <- mapply(c, all_content, all_filenames, SIMPLIFY = FALSE)
+
+# unlist all lists and change column name
+all_result <- rbindlist(all_lists, fill = T) 
