@@ -48,6 +48,47 @@ data <- load_behavioural_data()
 
 
 
+
+load_behavioural_data_2 <- function(
+  pattern    = "\\.csv$",
+  subdir     = "raw_data"
+) {
+  path <- here::here(subdir)  # Standardize to data/raw_data
+  
+  file_names <- list.files(
+    path       = path,
+    pattern    = pattern,
+    full.names = TRUE,    # Critical: full paths for reading
+    recursive  = FALSE    # Usually not needed for flat folders
+  )
+  
+  if (length(file_names) == 0) {
+    stop("No CSV files found in: ", path)
+  }
+  
+  # Read all and bind with source file column (tidyverse or data.table)
+  df <- purrr::map_dfr(
+    file_names,
+    readr::read_csv,
+    show_col_types = FALSE,
+    .id = "source_file"   # Automatically adds file column
+  )
+  
+  df
+}
+
+data_2 <- load_behavioural_data_2()
+
+
+
+
+
+
+
+
+
+
+
 # read file paths
 file.names <-list.files(path, pattern = ".csv", full.names = T, recursive = T)
 
